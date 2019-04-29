@@ -1,0 +1,19 @@
+parameters:
+  linux:
+    system:
+      user:
+        prazumovsky:
+          email: prazumovsky@mirantis.com
+          enabled: true
+          full_name: Peter Razumovsky
+          home: /home/prazumovsky
+          name: prazumovsky
+          sudo: ${_param:linux_system_user_sudo}
+  openssh:
+    server:
+      user:
+        prazumovsky:
+          enabled: true
+          public_keys:
+          - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9+aNOBVCv+g3wLijMgQPKQPAQaZ9UoHiR5WH7cdrC/WtbXMRemufx5TogwuNXJzsD6TG5Egq5gaWqiFHwGeLPwtM8Gce1ke6RxfVAby9H9JPB3QmIAtXw0B1grm8dxK98ST26M1pwrxmukf8Zik1jKLnef4LKG2Aj3RWzSPLz2FHqUKiAI0tx2o1hS46LPMbM81prnnzRvD+V85J0VW9YZ5kjGbQEdACWiyH2Jscp+b/86/CoQs9L81kHvJSONiV8K4EgNasKZiyfWbXD3Y/jmDtwvqBnXZb4Dk0tU6CnjoZZM5naqu4CrIRx+NocHEk1o/L6NC3qUUJngaYZVD53 prazumovsky@MacBook-Pro-prazumovsky.local
+          user: ${linux:system:user:prazumovsky}

@@ -1,0 +1,15 @@
+classes:
+- system.linux.system.repo.keystorage.glusterfs
+parameters:
+  linux:
+    system:
+      repo:
+        mcp_glusterfs:
+          source: "deb ${_param:linux_system_repo_mcp_glusterfs_url}/${_param:linux_system_codename}/ ${_param:linux_system_codename} main"
+          key: ${_param:linux_system_repo_mcp_glusterfs_key}
+          architectures: amd64
+          clean_file: true
+          pin:
+          - pin: "release o=LP-PPA-gluster-glusterfs-${_param:linux_system_repo_mcp_glusterfs_version_number}"
+            priority: 1100
+            package: '*'

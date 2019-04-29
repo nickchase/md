@@ -1,0 +1,20 @@
+parameters:
+  docker:
+    host:
+      proxy:
+        enabled: true
+        http: ${_param:http_proxy}
+        https: ${_param:http_proxy}
+        no_proxy: ${linux:system:proxy:noproxy}
+  linux:
+    system:
+      proxy:
+        noproxy:
+          - ${_param:opencontrail_control_node01_address}
+          - ${_param:opencontrail_control_node02_address}
+          - ${_param:opencontrail_control_node03_address}
+          - ${_param:opencontrail_control_address}
+          - ${_param:opencontrail_analytics_node01_address}
+          - ${_param:opencontrail_analytics_node02_address}
+          - ${_param:opencontrail_analytics_node03_address}
+          - ${_param:opencontrail_analytics_address}

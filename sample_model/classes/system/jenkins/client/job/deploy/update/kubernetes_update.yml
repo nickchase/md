@@ -1,0 +1,129 @@
+#
+# Jobs to update cloud packages on given Salt master environment
+#
+parameters:
+  _param:
+    jenkins_salt_api_url: "http://${_param:salt_master_host}:6969"
+    kubernetes_hyperkube_repo: ${_param:mcp_docker_registry}/mirantis/kubernetes
+    kubernetes_calico_repo: ${_param:mcp_docker_registry}/mirantis/projectcalico/calico
+  jenkins:
+    client:
+      job:
+        deploy-k8s-upgrade:
+          type: workflow-scm
+          concurrent: true
+          discard:
+            build:
+              keep_num: 10
+            artifact:
+              keep_num: 10
+          display_name: "Deploy - update kubernetes cluster"
+          scm:
+            type: git
+            url: "${_param:jenkins_gerrit_url}/mk/mk-pipelines"
+            branch: "${_param:jenkins_pipelines_branch}"
+            credentials: "gerrit"
+            script: k8s-upgrade-pipeline.groovy
+          param:
+            KUBERNETES_HYPERKUBE_SOURCE:
+              type: string
+              default: ""
+              description: "Versioned hyperkube binary to update control plane from. Should be null if update rolling via reclass-system level"
+            KUBERNETES_HYPERKUBE_SOURCE_HASH:
+              type: string
+              default: ""
+              description: "Hyperkube binary md5 hash. Should be null if update rolling via reclass-system level"
+            KUBERNETES_PAUSE_IMAGE:
+              type: string
+              default: ""
+              description: "Versioned pause image to use in deployments. Should be null if update rolling via reclass-system level"
+            SALT_MASTER_URL:
+              type: string
+              default: "${_param:jenkins_salt_api_url}"
+            SALT_MASTER_CREDENTIALS:
+              type: string
+              default: "salt"
+            SIMPLE_UPGRADE:
+              type: boolean
+              default: 'false'
+              description: "Choose between simple upgrade or upgrade with draining nodes"
+            PER_NODE:
+              type: boolean
+              default: 'true'
+              description: "Target nodes will be managed one by one"
+            TARGET_UPDATES:
+              type: string
+              default: "ctl,cmp"
+              description: "Comma separated list of nodes to update (Valid values are ctl,cmp)"
+            CTL_TARGET:
+              type: string
+              default: "I@kubernetes:master"
+              description: "Salt targeted kubernetes CTL nodes (ex. I@kubernetes:master). Kubernetes control plane"
+            CMP_TARGET:
+              type: string
+              default: "I@kubernetes:pool and not I@kubernetes:master"
+              description: "Salt targeted compute nodes (ex. 'cmp* and I@kubernetes:pool') Kubernetes computes"
+            CONFORMANCE_RUN_AFTER:
+              type: boolean
+              default: "false"
+              description: "Run conformance tests after upgrade"
+            CONFORMANCE_RUN_BEFORE:
+              type: boolean
+              default: "false"
+              description: "Run conformance tests before upgrade"
+            TEST_K8S_API_SERVER:
+              type: string
+              default: "http://127.0.0.1:8080"
+              description: "Local kubernetes apiserver variable for conformance tests"
+            ARTIFACTORY_URL:
+              type: string
+              default: ${_param:mcp_docker_registry}
+              description: "Artifactory URL where docker images located. Needed to correctly fetch conformance images."
+            UPGRADE_CALICO_V2_TO_V3:
+              type: boolean
+              default: 'false'
+              description: "Perform Calico upgrade from v2.x to v3.x. It is not needed for minor version upgrade (e.g., from v3.1 to v3.2)."
+            CALICO_UPGRADE_VERSION:
+              type: string
+              default: 'v1.0.5'
+              description: "Version of 'calico-upgrade' utility to be used."
+            KUBERNETES_CALICO_IMAGE:
+              type: string
+              default: ""
+              description: "Versioned calico/node image. Should be null if update rolling via reclass-system level"
+            KUBERNETES_CALICO_CALICOCTL_SOURCE:
+              type: string
+              default: ""
+              description: "Versioned calico/ctl binary. Should be null if update rolling via reclass-system level"
+            KUBERNETES_CALICO_CALICOCTL_SOURCE_HASH:
+              type: string
+              default: ""
+              description: "Calico/ctl binary md5 hash. Should be null if update rolling via reclass-system level"
+            KUBERNETES_CALICO_CNI_SOURCE:
+              type: string
+              default: ""
+              description: "Versioned calico/cni binary. Should be null if update rolling via reclass-system level"
+            KUBERNETES_CALICO_CNI_SOURCE_HASH:
+              type: string
+              default: ""
+              description: "Calico/cni binary hash. Should be null if update rolling via reclass-system level"
+            KUBERNETES_CALICO_BIRDCL_SOURCE:
+              type: string
+              default: ""
+              description: "Versioned calico/bird binary. Should be null if update rolling via reclass-system level"
+            KUBERNETES_CALICO_BIRDCL_SOURCE_HASH:
+              type: string
+              default: ""
+              description: "Calico/bird binary hash. Should be null if update rolling via reclass-system level"
+            KUBERNETES_CALICO_CNI_IPAM_SOURCE:
+              type: string
+              default: ""
+              description: "Versioned calico/ipam binary. Should be null if update rolling via reclass-system level"
+            KUBERNETES_CALICO_CNI_IPAM_SOURCE_HASH:
+              type: string
+              default: ""
+              description: "Calico/ipam binary hash. Should be null if update rolling via reclass-system level"
+            KUBERNETES_CALICO_KUBE_CONTROLLERS_IMAGE:
+              type: string
+              default: ""
+              description: "Versioned calico/kube-controllers image. Should be null if update rolling via reclass-system level"

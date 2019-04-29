@@ -1,0 +1,9 @@
+classes:
+- system.linux.system.repo.mcp.apt_mirantis.extra
+- system.linux.system.repo.mcp.apt_mirantis.percona
+- system.linux.system.repo.mcp.apt_mirantis.saltstack
+- system.linux.system.repo.mcp.apt_mirantis.ubuntu
+
+- system.linux.system.repo.mcp.apt_mirantis.update
+#- system.linux.system.repo.mcp.apt_mirantis.hotfix
+

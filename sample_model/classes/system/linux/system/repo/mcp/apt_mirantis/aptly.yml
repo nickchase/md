@@ -1,0 +1,13 @@
+# Deprecated since 2018.11
+# Will be removed in 2019.q2
+classes:
+- system.linux.system.repo.keystorage.aptly
+parameters:
+  linux:
+    system:
+      repo:
+        mcp_aptly:
+          source: "deb [arch=amd64] ${_param:linux_system_repo_mcp_aptly_url}/${_param:linux_system_codename}/ squeeze main"
+          architectures: amd64
+          clean_file: true
+          key: ${_param:linux_system_repo_mcp_aptly_key}

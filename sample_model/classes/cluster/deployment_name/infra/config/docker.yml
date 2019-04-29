@@ -1,0 +1,11 @@
+classes:
+- system.docker.host
+- system.docker.client
+- system.docker.swarm.master
+parameters:
+  docker:
+    host:
+      insecure_registries:
+      - ${_param:mcp_docker_registry}
+      options:
+        bridge: none

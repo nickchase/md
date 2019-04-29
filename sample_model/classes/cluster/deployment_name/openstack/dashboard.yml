@@ -1,0 +1,39 @@
+classes:
+- system.horizon.server.single
+#- system.horizon.server.plugin.theme
+- system.haproxy.proxy.listen.openstack.openstack_web
+- system.horizon.server.plugin.contrail
+- system.horizon.server.plugin.overrides
+- cluster.deployment_name.infra
+parameters:
+  _param:
+    horizon_site_branding: OpenStack Dashboard
+    # horizon_dashboard_theme: mirantis
+    cluster_node01_hostname: ${_param:openstack_proxy_node01_hostname}
+    cluster_node01_address: ${_param:openstack_proxy_node01_address}
+    cluster_node02_hostname: ${_param:openstack_proxy_node02_hostname}
+    cluster_node02_address: ${_param:openstack_proxy_node02_address}
+    haproxy_openstack_web_bind_port: ${_param:horizon_public_port}
+    haproxy_openstack_web_check_params: check inter 10s fastinter 2s downinter 3s rise 3 fall 3 check-ssl verify none
+  horizon:
+    server:
+      cache:
+        ~members:
+        - host: ${_param:openstack_proxy_node01_address}
+          port: 11211
+        - host: ${_param:openstack_proxy_node02_address}
+          port: 11211
+#
+# openstack_web_proxy definition is created to redirect requests to horizon
+# from HTTP to HTTPS
+#
+  haproxy:
+    proxy:
+      listen:
+        openstack_web_proxy:
+          mode: http
+          format: end
+          force_ssl: true
+          binds:
+           - address: ${_param:cluster_vip_address}
+             port: 80

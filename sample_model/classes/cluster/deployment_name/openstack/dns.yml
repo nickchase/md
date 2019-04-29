@@ -1,0 +1,4 @@
+classes:
+- system.powerdns.server.cluster
+- cluster.deployment_name.infra
+- cluster.deployment_name.openstack.networking.virtual

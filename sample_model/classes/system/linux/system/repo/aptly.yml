@@ -1,0 +1,9 @@
+parameters:
+  linux:
+    system:
+      repo:
+        aptly:
+          source: "deb http://repo.aptly.info/ squeeze main"
+          architectures: amd64
+          key_id: ED75B5A4483DA07C
+          key_server: pool.sks-keyservers.net

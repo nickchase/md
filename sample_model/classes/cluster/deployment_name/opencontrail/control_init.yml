@@ -1,0 +1,11 @@
+classes:
+- cluster.deployment_name.infra.backup.client_cassandra
+parameters:
+  _param:
+    cassandra_remote_backup_server: cfg01
+  cassandra:
+    backup:
+      client:
+        containers:
+        - opencontrail_controller_1
+  

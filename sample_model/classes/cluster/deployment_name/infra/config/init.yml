@@ -1,0 +1,78 @@
+classes:
+- system.linux.system.repo.mcp.apt_mirantis.salt-formulas
+- system.linux.system.repo.mcp.apt_mirantis.update.salt-formulas
+- system.linux.system.repo.mcp.apt_mirantis.docker
+- system.linux.system.repo.mcp.apt_mirantis.update.docker
+- system.linux.system.repo.mcp.apt_mirantis.openstack
+- system.linux.system.repo.mcp.apt_mirantis.glusterfs
+- system.glusterfs.client.cluster
+- system.glusterfs.client.volume.salt_pki
+- system.salt.minion.ca.salt_master
+- system.salt.master.single
+- system.salt.master.api
+- system.reclass.storage.salt
+- system.salt.master.pillar.composite.reclass
+- system.reclass.storage.system.physical_control_cluster
+- system.reclass.storage.system.opencontrail_analytics_cluster
+- system.reclass.storage.system.opencontrail_control_cluster
+- system.reclass.storage.system.openstack_control_cluster
+- system.reclass.storage.system.openstack_proxy_cluster
+- system.reclass.storage.system.openstack_database_cluster
+- system.reclass.storage.system.openstack_message_queue_cluster
+#- system.reclass.storage.system.openstack_control_upgrade_single
+- system.reclass.storage.system.stacklight_log_cluster
+- system.reclass.storage.system.stacklight_telemetry_cluster
+- system.reclass.storage.system.stacklightv2_server_cluster
+- system.reclass.storage.system.cicd_control_cluster
+- cluster.deployment_name.infra.config.postgresql
+- cluster.deployment_name.infra.maas
+- cluster.deployment_name.infra.salt_master_formulas
+- cluster.deployment_name.infra
+- cluster.deployment_name.infra.backup.client_common
+- cluster.deployment_name.infra.networking.config
+- cluster.deployment_name.infra.config.docker
+# Use proxy (nginx) when day01 image uses jenkins in docker by default
+#- cluster.deployment_name.infra.config.proxy
+- cluster.deployment_name.infra.config.jenkins
+- cluster.deployment_name.infra.config.nodes
+parameters:
+  _param:
+    salt_master_base_environment: prd
+    reclass_data_repository: "https://github.com/Mirantis/mk-lab-salt-model.git"
+    reclass_data_revision: master
+    reclass_config_master: ${_param:infra_config_deploy_address}
+    single_address: ${_param:infra_config_address}
+    deploy_address: ${_param:infra_config_deploy_address}
+    linux_system_codename: xenial
+    salt_api_password_hash: "xxxxxxxxxxxxxxxxxx"
+    salt_master_host: ${_param:infra_config_deploy_address}
+    salt_api_password: xxxxxxxxxxxxxxxxxxxx
+    control_vip_address: ${_param:infra_config_address}
+    cluster_vip_address: ${_param:infra_config_address}
+    http_proxy_address: ""
+    http_proxy_port: ""
+    http_proxy: ""
+    opencontrail_control_system_codename: xenial
+    opencontrail_analytics_system_codename: xenial
+  salt:
+    master:
+      command_timeout: 600
+      user:
+        deploy:
+          permissions: ${_param:salt_master_api_permissions}
+      backup: true
+    minion:
+      backup: true
+# FIXME: This WA should be removed, after qemu\kvm\stacklight\etc system
+# packages will be splitted from openstack repo. PROD-21270
+  linux:
+    system:
+      repo:
+        mcp_maas:
+          pin:
+          # Explicity pin python3-django to Ubuntu-upstream repo, instead one
+          # from openstack repo. PROD-19812
+          - pin: 'release o=Ubuntu'
+            priority: 1110
+            package: 'python3-django'
+

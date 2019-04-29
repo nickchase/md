@@ -1,0 +1,31 @@
+parameters:
+  _param:
+    openstack_benchmark_backend_image: ${_param:salt_control_trusty_image_backend}
+    salt_control_cluster_node_cloud_init_openstack_benchmark:
+      user_data:
+        write_files:
+        - content: |
+            ${salt:control:size:openstack.benchmark:image_layout}
+          owner: root:root
+          path: /usr/share/growlvm/image-layout.yml
+  salt:
+    control:
+      size:
+        openstack.benchmark:
+          cpu: 2
+          ram: 4096
+          disk_profile: small
+          net_profile: default
+          image_layout: ${_param:salt_control_size_image_layout_openstack_benchmark}
+      cluster:
+        internal:
+          domain: ${_param:cluster_domain}
+          engine: virt
+          node:
+            bmk01:
+              name: ${_param:openstack_benchmark_node01_hostname}
+              provider: ${_param:infra_kvm_node03_hostname}.${_param:cluster_domain}
+              image: ${_param:salt_control_trusty_image}
+              backend: ${_param:openstack_benchmark_backend_image}
+              size: openstack.benchmark
+              cloud_init: ${_param:salt_control_cluster_node_cloud_init_openstack_benchmark}

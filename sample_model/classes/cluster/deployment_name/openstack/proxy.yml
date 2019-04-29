@@ -1,0 +1,50 @@
+classes:
+- system.linux.system.repo.mcp.apt_mirantis.glusterfs
+- system.glusterfs.client.cluster
+- system.glusterfs.client.volume.salt_pki
+- system.nginx.server.single
+- system.nginx.server.proxy.opencontrail_web
+- system.nginx.server.stream.gerrit_ssh
+- system.nginx.server.proxy.cicd.gerrit
+- system.nginx.server.proxy.cicd.jenkins
+- system.nginx.server.proxy.openstack_api
+- system.nginx.server.proxy.openstack_vnc
+- system.nginx.server.proxy.openstack.ceilometer
+- system.horizon.server.single
+- system.salt.minion.cert.proxy.openstack
+- system.salt.minion.cert.proxy.pki
+- system.sphinx.server.doc.reclass
+- system.keepalived.cluster.instance.openstack_proxy_vip
+- system.haproxy.proxy.single
+- cluster.deployment_name.openstack.dashboard
+- cluster.deployment_name.stacklight.proxy
+- cluster.deployment_name.openstack.networking.virtual
+- cluster.deployment_name.infra
+parameters:
+  _param:
+    keepalived_vip_interface: ens3
+    keepalived_vip_virtual_router_id: 240
+    nginx_proxy_openstack_glance_image_size: 30000m
+    nginx_proxy_ssl:
+      enabled: true
+      authority: ${_param:salt_minion_ca_authority}
+      engine: salt
+      mode: secure
+      key_file:  /srv/salt/pki/${_param:cluster_name}/${salt:minion:cert:proxy:common_name}.key
+      cert_file: /srv/salt/pki/${_param:cluster_name}/${salt:minion:cert:proxy:common_name}.crt
+      chain_file: /srv/salt/pki/${_param:cluster_name}/${salt:minion:cert:proxy:common_name}-with-chain.crt
+    cluster_vip_address: ${_param:openstack_proxy_address}
+    apache_ssl:
+      enabled: true
+      authority: ${_param:salt_minion_ca_authority}
+      engine: salt
+      key_file:  /srv/salt/pki/${_param:cluster_name}/${salt:minion:cert:proxy:common_name}.key
+      cert_file: /srv/salt/pki/${_param:cluster_name}/${salt:minion:cert:proxy:common_name}.crt
+      chain_file: /srv/salt/pki/${_param:cluster_name}/${salt:minion:cert:proxy:common_name}-with-chain.crt
+    openstack_memcached_server_bind_address: ${_param:single_address}
+  # wait for Gluster /srv/salt/pki mount before starting
+  nginx:
+    server:
+      wait_for_service:
+        - srv-salt-pki.mount
+

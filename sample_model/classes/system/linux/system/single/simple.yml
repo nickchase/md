@@ -1,0 +1,31 @@
+classes:
+- service.linux.system
+- service.linux.system.cis
+- system.linux.system.banner
+- service.logrotate.server
+parameters:
+  _param:
+    local_package_repos: false
+    logrotate_keep_rotate: 10
+  linux:
+    system:
+      at:
+        enabled: true
+        user:
+          root:
+            enabled: true
+      cron:
+        enabled: true
+        user:
+          root:
+            enabled: true
+      local_package_repos: ${_param:local_package_repos}
+      timezone: UTC
+      locale:
+        en_US.UTF-8:
+          enabled: true
+          default: true
+  logrotate:
+    server:
+      global_conf:
+        keep_rotate: ${_param:logrotate_keep_rotate}

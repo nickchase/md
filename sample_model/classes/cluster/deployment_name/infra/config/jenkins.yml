@@ -1,0 +1,86 @@
+classes:
+- system.docker.swarm.stack.jenkins.master
+- system.docker.swarm.stack.jenkins.slave_single
+- system.jenkins.client.job.deploy.openstack
+- system.jenkins.client.job.validate
+- system.jenkins.client
+- system.jenkins.client.credential.salt
+- system.jenkins.client.user.admin
+- system.docker.client.images.jenkins_master
+- system.docker.client.images.jenkins_slave
+parameters:
+  _param:
+    cluster_node01_name: ${_param:infra_config_hostname}
+    cluster_node01_address: ${_param:infra_config_address}
+    jenkins_git_url: 'git@cfg01:/home/repo'
+    jenkins_gerrit_url: ${_param:jenkins_git_url}
+    jenkins_salt_api_url: "http://${_param:infra_config_deploy_address}:6969"
+    jenkins_pipeline_library_url: git@cfg01:/home/repo/mcp-ci/pipeline-library
+    jenkins_admin_user: admin
+    jenkins_client_user: ${_param:jenkins_admin_user}
+    jenkins_admin_password: r00tme
+    jenkins_client_password: ${_param:jenkins_admin_password}
+    jenkins_security_matrix_read:
+    - anonymous
+  docker:
+    client:
+      stack:
+        jenkins:
+          service:
+            master:
+              extra_hosts:
+              - "cfg01:${_param:infra_config_address}"
+              #TODO: remove ports override when nginx is enabled
+              ports:
+              - 8081:8080
+              - 50000:50000
+            slave01:
+              extra_hosts:
+              - "cfg01:${_param:infra_config_address}"
+  linux:
+    system:
+      package:
+        ca-certificates-java:
+          version: latest
+  jenkins:
+    master:
+      http:
+        port: 8081
+    client:
+      security:
+        matrix:
+          permissions:
+            Jenkins:
+              ADMINISTER:
+              - ${_param:jenkins_admin_user}
+              READ: ${_param:jenkins_security_matrix_read}
+            hudson:
+              model:
+                Item:
+                  READ: ${_param:jenkins_security_matrix_read}
+                View:
+                  READ: ${_param:jenkins_security_matrix_read}
+      theme:
+        css_url: '/userContent/theme/mirantis.css'
+        js_url: '/userContent/theme/mirantis.js'
+      lib:
+        pipeline-library:
+          url: ${_param:jenkins_pipeline_library_url}
+          branch: ${_param:jenkins_pipelines_branch}
+      master:
+        host: ${_param:infra_config_deploy_address}
+        port: 8081
+        password: ${_param:jenkins_client_password}
+      node:
+        slave01:
+          remote_home: /var/lib/jenkins
+          num_executors: 4
+          node_mode: Normal
+          ret_strategy: Always
+          labels:
+          - cfg
+          - upgrades
+          - python
+          - test
+          launcher:
+            type: jnlp

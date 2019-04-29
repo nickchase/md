@@ -1,0 +1,5 @@
+classes:
+#- haproxy.proxy.listen.openstack.galera.clustercheck
+- cluster.deployment_name.infra
+- cluster.deployment_name.openstack.networking.virtual
+

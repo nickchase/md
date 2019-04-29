@@ -1,0 +1,61 @@
+#
+# Jobs to upgrade MCP release
+#
+parameters:
+  _param:
+    jenkins_salt_api_url: "http://${_param:salt_master_host}:6969"
+  jenkins:
+    client:
+      job:
+        upgrade-mcp-release:
+          type: workflow-scm
+          concurrent: true
+          discard:
+            build:
+              keep_num: 10
+            artifact:
+              keep_num: 10
+          display_name: "Deploy - upgrade MCP Drivetrain"
+          scm:
+            remote_name: origin
+            refspec: "$MK_PIPELINES_REFSPEC"
+            url: "${_param:jenkins_gerrit_url}/mk/mk-pipelines"
+            script: upgrade-mcp-release.groovy
+            type: git
+            credentials: "gerrit"
+            branch: FETCH_HEAD
+            wipe_workspace: True
+          param:
+            MK_PIPELINES_REFSPEC:
+              type: string
+              default: ""
+              description: "Version of mk-pipelines git repo to be used. Must be same as TARGET_MCP_VERSION"
+            TARGET_MCP_VERSION:
+              type: string
+              default: ""
+              description: "Target version of mcp, aka mcp_version"
+            GIT_REFSPEC:
+              type: string
+              default: ""
+              description: "Version of git repos to be used, should be release/TARGET_MCP_VERSION"
+            DRIVE_TRAIN_PARAMS:
+              type: text
+              description: "Yaml based DriveTrain releated params"
+              default: |
+                ---
+                SALT_MASTER_URL: "${_param:jenkins_salt_api_url}"
+                SALT_MASTER_CREDENTIALS: "salt"
+                # Replace `mcp_version` parameter to TARGET_MCP_VERSION in cluster level Reclass model?
+                UPDATE_CLUSTER_MODEL: true
+                # Upgrade SaltStack packages
+                UPGRADE_SALTSTACK: true
+                # Mirror pipelines from upstream/local mirror to Gerrit
+                UPDATE_PIPELINES: true
+                # se only when local repositories are present
+                UPDATE_LOCAL_REPOS: false
+                # Next parameters added only for test purposes and not enabled by default
+                # RECLASS_SYSTEM_BRANCH: ''
+            PIPELINE_TIMEOUT:
+              type: string
+              default: '12'
+              description: "Sets pipeline timeout in hours. Defaults to '12' if left empty."

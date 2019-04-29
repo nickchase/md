@@ -1,0 +1,46 @@
+classes:
+- service.aptly.server.single
+- system.nginx.server.single
+- service.iptables.server
+parameters:
+  _param:
+    nginx_aptly_server_host: ${linux:network:fqdn}
+    aptly_server_secure: true
+    aptly_server_mirror_sources: false
+    aptly_server_mirror_ubuntu_sources: ${_param:aptly_server_mirror_sources}
+  linux:
+    system:
+      cron:
+        user:
+          aptly:
+            enabled: true
+  nginx:
+    server:
+      site:
+        aptly_server:
+          enabled: true
+          type: aptly
+          name: server
+          host:
+            name: ${_param:nginx_aptly_server_host}
+        aptly_api:
+          enabled: true
+          check: false
+          type: nginx_proxy
+          name: aptly_api
+          proxy:
+            host: 127.0.0.1
+            port: 8080
+            protocol: http
+            size: 1G
+          host:
+            name: ${_param:nginx_aptly_server_host}
+            port: 8081
+  aptly:
+    server:
+      enabled: true
+      secure: ${_param:aptly_server_secure}
+      gpg:
+        keypair_id: ${_param:aptly_gpg_keypair_id}
+        public_key: ${_param:aptly_gpg_public_key}
+        private_key: ${_param:aptly_gpg_private_key}

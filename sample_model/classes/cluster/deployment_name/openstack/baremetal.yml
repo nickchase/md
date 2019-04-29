@@ -1,0 +1,28 @@
+classes:
+- system.ironic.api.cluster
+- system.ironic.conductor.cluster
+- system.ironic.tftpd_hpa
+- system.nova.compute_ironic.cluster
+- system.apache.server.single
+- system.apache.server.site.ironic
+- system.keepalived.cluster.instance.openstack_baremetal_vip
+- system.haproxy.proxy.listen.openstack.ironic_deploy
+- system.haproxy.proxy.single
+- cluster.deployment_name.infra
+- cluster.deployment_name.openstack.networking.virtual
+parameters:
+  _param:
+    ironic_api_type: 'deploy'
+    cluster_vip_address: ${_param:openstack_control_address}
+    ironic_service_host: ${_param:cluster_vip_address}
+    cluster_local_address: ${_param:single_address}
+    cluster_baremetal_vip_address: ${_param:openstack_baremetal_address_baremetal}
+    cluster_baremetal_local_address: ${_param:baremetal_address}
+    keepalived_openstack_baremetal_vip_interface: ens5
+    cluster_node01_hostname: ${_param:openstack_baremetal_node01_hostname}
+    cluster_node01_address: ${_param:openstack_baremetal_node01_address}
+    cluster_node02_hostname: ${_param:openstack_baremetal_node02_hostname}
+    cluster_node02_address: ${_param:openstack_baremetal_node02_address}
+    cluster_node03_hostname: ${_param:openstack_baremetal_node03_hostname}
+    cluster_node03_address: ${_param:openstack_baremetal_node03_address}
+    keepalived_openstack_baremetal_password: ${_param:keepalived_openstack_baremetal_password_generated}

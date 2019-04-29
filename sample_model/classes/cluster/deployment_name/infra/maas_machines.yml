@@ -1,0 +1,40 @@
+
+parameters:
+  maas:
+    region:
+      machines:
+        <<LOAD_FROM_FILE>>
+#parameters:
+#  maas:
+#    region:
+#      machines:
+#        kvm02:
+#          pxe_interface_mac: "fc:15:b4:15:a2:22"
+#          interfaces:
+#            nic01:
+#              type: eth
+#              name: eno1
+#              mac: "fc:15:b4:15:a2:22"
+#              subnet: "${maas:region:subnets:deploy_network:name}"
+#              gateway: "${_param:deploy_network_gateway}"
+#              ip: "${_param:infra_kvm_node02_deploy_address}"
+#              mode: "static"
+#          power_parameters:
+#            power_type: manual
+#        kvm03:
+#          pxe_interface_mac: "fc:15:b4:15:a2:33"
+#          interfaces:
+#            nic01:
+#              type: eth
+#              name: eno1
+#              mac: "fc:15:b4:15:a2:33"
+#              subnet: "${maas:region:subnets:deploy_network:name}"
+#              gateway: "${_param:deploy_network_gateway}"
+#              ip: "${_param:infra_kvm_node03_deploy_address}"
+#              mode: "static"
+#          power_parameters:
+#            power_address: 185.30.60.99
+#            power_pass: password
+#            power_type: ipmi
+#            power_user: admin
+# TODO: add some more default-examples?

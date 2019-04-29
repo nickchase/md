@@ -1,0 +1,24 @@
+classes:
+- system.grafana.client
+- system.grafana.client.datasource.prometheus
+- system.docker.client
+- system.docker.swarm.stack.dashboard
+- system.docker.swarm.stack.monitoring.prometheus
+- system.docker.swarm.stack.monitoring.prometheus.global
+- system.docker.swarm.stack.monitoring.alertmanager
+- system.docker.swarm.stack.monitoring.alerta
+- system.docker.swarm.stack.monitoring.prometheus_relay
+- system.docker.swarm.stack.monitoring.pushgateway
+- system.docker.swarm.stack.monitoring.remote_agent
+- system.docker.client.images.monitoring
+- system.docker.swarm.stack.monitoring.remote_collector
+parameters:
+  _param:
+    # Grafana client parameters
+    grafana_address: ${_param:stacklight_monitor_address}
+    grafana_port: 15013
+    grafana_user: admin
+    grafana_password: ${_param:grafana_admin_password}
+    grafana_prometheus_address: ${_param:stacklight_telemetry_address}
+    grafana_prometheus_port: ${_param:prometheus_relay_bind_port}
+    stacklight_prometheus_port: 15010

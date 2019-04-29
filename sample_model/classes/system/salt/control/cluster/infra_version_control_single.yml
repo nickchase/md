@@ -1,0 +1,30 @@
+parameters:
+  _param:
+    infra_version_control_backend_image: ${_param:salt_control_xenial_image_backend}
+    salt_control_cluster_node_cloud_init_infra_version_control:
+      user_data:
+        write_files:
+        - content: |
+            ${salt:control:size:infra.version_control:image_layout}
+          owner: root:root
+          path: /usr/share/growlvm/image-layout.yml
+  salt:
+    control:
+      size:
+        infra.version_control:
+          cpu: 4
+          ram: 8192
+          disk_profile: small
+          net_profile: default
+          image_layout: ${_param:salt_control_size_image_layout_infra_version_control}
+      cluster:
+        internal:
+          domain: ${_param:cluster_domain}
+          engine: virt
+          node:
+            git01:
+              provider: ${_param:infra_kvm_node02_hostname}.${_param:cluster_domain}
+              image: ${_param:salt_control_xenial_image}
+              backend: ${_param:infra_version_control_backend_image}
+              size: infra.version_control
+              cloud_init: ${_param:salt_control_cluster_node_cloud_init_infra_version_control}

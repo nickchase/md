@@ -1,0 +1,15 @@
+parameters:
+  salt:
+    master:
+      environment:
+        prd:
+          formula:
+            devops_portal:
+              source: pkg
+              name: salt-formula-devops-portal
+            rundeck:
+              source: pkg
+              name: salt-formula-rundeck
+            keycloak:
+              source: pkg
+              name: salt-formula-keycloak

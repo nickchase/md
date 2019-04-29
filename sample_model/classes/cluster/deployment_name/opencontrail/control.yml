@@ -1,0 +1,61 @@
+classes:
+- service.haproxy.proxy.single
+- system.linux.system.repo.mcp.apt_mirantis.contrail
+#- system.linux.system.repo.mcp.apt_mirantis.update.contrail
+#- system.linux.system.repo.mcp.apt_mirantis.hotfix.contrail
+- system.linux.system.repo.mcp.apt_mirantis.openstack
+- system.prometheus.exporters.jmx
+- system.opencontrail.client.cluster
+- system.docker.client.compose
+- system.docker.host
+- system.opencontrail.control.control4_0
+- system.linux.system.repo.mcp.apt_mirantis.docker
+- system.linux.system.repo.mcp.apt_mirantis.update.docker
+- system.opencontrail.client.resource.openstack_metadata
+- system.opencontrail.client.resource.edge_routers
+- system.opencontrail.client.resource.control_node
+- system.opencontrail.client.resource.config_node
+- system.opencontrail.client.resource.database_node
+- system.opencontrail.client.resource.global_vrouter_config
+- cluster.deployment_name.infra.backup.client_zookeeper
+- cluster.deployment_name.infra
+- cluster.deployment_name.opencontrail.networking.virtual
+#- cluster.deployment_name.opencontrail.networking.proxy
+
+- system.salt.minion.cert.opencontrail.xmpp
+parameters:
+  _param:
+    keepalived_vip_interface: ens3
+    
+    keepalived_vip_virtual_router_id: 60
+    cluster_vip_address: ${_param:opencontrail_control_address}
+    cluster_local_address: ${_param:single_address}
+    cluster_node01_hostname: ${_param:opencontrail_control_node01_hostname}
+    cluster_node01_address: ${_param:opencontrail_control_node01_address}
+    cluster_node02_hostname: ${_param:opencontrail_control_node02_hostname}
+    cluster_node02_address: ${_param:opencontrail_control_node02_address}
+    cluster_node03_hostname: ${_param:opencontrail_control_node03_hostname}
+    cluster_node03_address: ${_param:opencontrail_control_node03_address}
+    opencontrail_router01_hostname: rtr01
+    opencontrail_router01_address: 10.0.1.100
+    opencontrail_router02_hostname: rtr02
+    opencontrail_router02_address: 10.0.1.101
+  linux:
+    network:
+      host:
+        ctl:
+          address: ${_param:opencontrail_control_address}
+          names:
+          - ctl
+          - ctl.${_param:cluster_domain}
+  opencontrail:
+    web:
+      network:
+        host: ${_param:opencontrail_control_address}
+    common:
+      network:
+        host: ${_param:opencontrail_control_address}
+    config:
+      network:
+        host: ${_param:opencontrail_control_address}
+

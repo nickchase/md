@@ -1,0 +1,18 @@
+classes:
+- system.docker.swarm.stack.postgresql
+parameters:
+  _param:
+    postgresql_admin_user_password: ${_param:infra_postgresql_admin_user_password}
+  linux:
+    system:
+      directory:
+        /srv/volumes:
+          user: root
+          group: root
+          mode: 755
+          makedirs: true
+        /srv/volumes/postgresql/data:
+          user: 999
+          group: 999
+          mode: 755
+          makedirs: true

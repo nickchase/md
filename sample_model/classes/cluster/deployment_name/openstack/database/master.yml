@@ -1,0 +1,14 @@
+classes:
+- system.mysql.client.single
+- system.galera.server.database.cinder
+- system.galera.server.database.glance
+- system.galera.server.database.grafana
+- system.galera.server.database.heat
+- system.galera.server.database.keystone
+- system.galera.server.database.nova
+- system.galera.server.database.neutron
+#- haproxy.proxy.listen.openstack.galera.clustercheck
+- cluster.deployment_name.infra
+- cluster.deployment_name.openstack.networking.virtual
+- cluster.deployment_name.infra.backup.client_mysql
+

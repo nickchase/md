@@ -1,0 +1,30 @@
+classes:
+- system.nginx.server.proxy.cicd.jenkins
+- system.salt.minion.cert.proxy
+- system.salt.minion.cert.proxy.pki
+parameters:
+  _param:
+    cluster_public_host: ${_param:openstack_proxy_address}
+    nginx_proxy_jenkins_server_proxy_host: 127.0.0.1
+    nginx_proxy_jenkins_server_proxy_port: 18081
+    nginx_proxy_jenkins_server_site_host: ${_param:infra_config_address}
+    nginx_proxy_jenkins_server_site_port: 8081
+    nginx_proxy_ssl:
+      enabled: false
+      authority: ${_param:salt_minion_ca_authority}
+      engine: salt
+      mode: secure
+      key_file:  /srv/salt/pki/${_param:cluster_name}/${salt:minion:cert:proxy:common_name}.key
+      cert_file: /srv/salt/pki/${_param:cluster_name}/${salt:minion:cert:proxy:common_name}.crt
+      chain_file: /srv/salt/pki/${_param:cluster_name}/${salt:minion:cert:proxy:common_name}-with-chain.crt
+  nginx:
+    server:
+      enabled: true
+      stream:
+        nginx_jenkins_slave:
+          backend:
+            cicd:
+              address: 127.0.0.1
+              port: 50001
+          host:
+            port: 50000

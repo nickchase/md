@@ -1,0 +1,198 @@
+classes:
+- system.defaults
+- system.linux.system.single
+- system.linux.system.single.debian
+- system.linux.network.dynamic_hosts
+- system.salt.minion.single
+- system.rsyslog.client.single
+- cluster.deployment_name.openstack
+- cluster.deployment_name.opencontrail
+- system.linux.system.repo.mcp.apt_mirantis.fluentd
+- system.linux.system.repo.mcp.apt_mirantis.update.fluentd
+- system.fluentd
+- system.fluentd.label.default_metric
+- system.fluentd.label.default_metric.prometheus
+- system.fluentd.label.default_output.elasticsearch
+- system.fluentd.label.default_output.drop_event
+
+- system.linux.system.repo.mcp.apt_mirantis.openstack
+- system.telegraf.agent
+- system.prometheus.collector
+- service.grafana.collector
+- cluster.deployment_name.stacklight
+- cluster.deployment_name.cicd
+#- cluster.deployment_name.infra.proxy
+- cluster.deployment_name.infra.apt_repos
+- cluster.deployment_name.infra.secrets
+parameters:
+  _param:
+    motd_company_name: MirantisTestDeployment
+    ssh_banner_company_name: MirantisTestDeployment
+
+    # Don't set it "false" before you configure sudo policies and enable power users.
+    linux_system_user_sudo: true
+    mcp_version: 2019.2.0
+    # For bw compat
+    apt_mk_version: ${_param:mcp_version}
+    # TODO: Revert openstack repo part after refactoring here: https://mirantis.jira.com/browse/PROD-17500
+    openstack_version: pike
+    jenkins_pipelines_branch: "release/${_param:mcp_version}"
+    openldap_domain:  "deploy-name.local"
+    openldap_organisation: "${_param:cluster_name}"
+    infra_config_hostname: cfg01
+    salt_minion_ca_host: ${_param:infra_config_hostname}.${_param:cluster_domain}
+    # infra service addresses
+    infra_config_address: 10.128.0.10
+    infra_config_deploy_address: 10.128.1.10
+
+    cluster_domain: deploy-name.local
+    cluster_name: deployment_name
+    cluster_public_host: ${_param:openstack_proxy_address}
+    control_network_netmask: 255.255.255.0
+    tenant_network_netmask: 255.255.255.0
+
+    dns_server01: 8.8.8.8
+    dns_server02: 1.1.1.1
+    tenant_network_subnet: 10.0.2.0/24
+    tenant_network_gateway: 10.0.2.1
+    control_vlan: 10
+    tenant_vlan: 20
+
+    deploy_network_netmask: 255.255.255.0
+    deploy_network_gateway: 10.0.0.1
+
+    # MaaS parameters
+    infra_maas_node01_deploy_address: ${_param:infra_config_deploy_address}
+    infra_maas_node01_hostname: ${_param:infra_config_hostname}
+    infra_kvm_address: 10.0.1.239
+    infra_kvm_node01_address: 10.0.1.240
+    infra_kvm_node02_address: 10.0.1.241
+    infra_kvm_node03_address: 10.0.1.242
+    infra_kvm_node01_deploy_address: 10.167.5.241
+    infra_kvm_node02_deploy_address: 10.167.5.242
+    infra_kvm_node03_deploy_address: 10.167.5.243
+    infra_kvm_node01_hostname: kvm01
+    infra_kvm_node02_hostname: kvm02
+    infra_kvm_node03_hostname: kvm03
+    infra_kvm_node04_address: 10.167.4.244
+    infra_kvm_node05_address: 10.167.4.245
+    infra_kvm_node06_address: 10.167.4.246
+    infra_kvm_node04_deploy_address: 10.167.5.244
+    infra_kvm_node05_deploy_address: 10.167.5.245
+    infra_kvm_node06_deploy_address: 10.167.5.246
+    infra_kvm_node04_hostname: kvm04
+    infra_kvm_node05_hostname: kvm05
+    infra_kvm_node06_hostname: kvm06
+    infra_kvm_node07_address: 10.167.4.247
+    infra_kvm_node08_address: 10.167.4.248
+    infra_kvm_node09_address: 10.167.4.249
+    infra_kvm_node07_deploy_address: 10.167.5.247
+    infra_kvm_node08_deploy_address: 10.167.5.248
+    infra_kvm_node09_deploy_address: 10.167.5.249
+    infra_kvm_node07_hostname: kvm07
+    infra_kvm_node08_hostname: kvm08
+    infra_kvm_node09_hostname: kvm09
+    infra_kvm_node10_address: 10.167.4.250
+    infra_kvm_node11_address: 10.167.4.251
+    infra_kvm_node12_address: 10.167.4.252
+    infra_kvm_node10_deploy_address: 10.167.5.250
+    infra_kvm_node11_deploy_address: 10.167.5.251
+    infra_kvm_node12_deploy_address: 10.167.5.252
+    infra_kvm_node10_hostname: kvm10
+    infra_kvm_node11_hostname: kvm11
+    infra_kvm_node12_hostname: kvm12
+    glusterfs_node01_address: ${_param:infra_kvm_node01_address}
+    glusterfs_node02_address: ${_param:infra_kvm_node02_address}
+    glusterfs_node03_address: ${_param:infra_kvm_node03_address}
+    linux_dhcp_interface:
+      enabled: true
+      type: eth
+      proto: dhcp
+      mesh: deploy
+    linux_single_interface:
+      enabled: true
+      type: eth
+      proto: static
+      address: ${_param:single_address}
+      netmask: ${_param:control_network_netmask}
+      name_servers:
+        - ${_param:dns_server01}
+        - ${_param:dns_server02}
+      mesh: control
+  salt:
+    minion:
+      trusted_ca_minions:
+        - ${_param:salt_minion_ca_host}
+  linux:
+    network:
+      dhclient:
+        enabled: true
+        request:
+          - subnet-mask
+          - broadcast-address
+          - time-offset
+          - routers
+          - domain-name
+          - domain-name-servers
+          - domain-search
+          - host-name
+          - dhcp6.name-servers
+          - dhcp6.domain-search
+          - dhcp6.fqdn
+          - dhcp6.sntp-servers
+          - netbios-name-servers
+          - netbios-scope
+          - interface-mtu
+          - rfc3442-classless-static-routes
+      host:
+        hostname:
+          address: ${_param:single_address}
+          names:
+          - ${linux:network:hostname}
+          - ${linux:network:fqdn}
+        localhost:
+          address: 127.0.0.1
+          names:
+          - localhost 
+          - images.maas.io
+        cfg01:
+          address: ${_param:infra_config_address}
+          names:
+          - ${_param:infra_config_hostname}
+          - ${_param:infra_config_hostname}.${_param:cluster_domain}
+        cfg:
+          address: ${_param:infra_config_address}
+          names:
+          - cfg
+          - cfg.${_param:cluster_domain}
+        kvm01:
+          address: ${_param:infra_kvm_node01_address}
+          names:
+          - ${_param:infra_kvm_node01_hostname}
+          - ${_param:infra_kvm_node01_hostname}.${_param:cluster_domain}
+        kvm02:
+          address: ${_param:infra_kvm_node02_address}
+          names:
+          - ${_param:infra_kvm_node02_hostname}
+          - ${_param:infra_kvm_node02_hostname}.${_param:cluster_domain}
+        kvm03:
+          address: ${_param:infra_kvm_node03_address}
+          names:
+          - ${_param:infra_kvm_node03_hostname}
+          - ${_param:infra_kvm_node03_hostname}.${_param:cluster_domain}
+    system:
+      name: ${_param:infra_config_hostname}
+      domain: ${_param:cluster_domain}
+      service:
+        apt-daily.timer:
+          status: dead
+          enabled: false
+        systemd-timesyncd:
+          status: dead
+          enabled: false
+      package:
+        python-msgpack:
+          version: latest
+        python-tornado:
+          version: latest
+

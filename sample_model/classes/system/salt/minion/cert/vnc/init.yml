@@ -1,0 +1,3 @@
+parameters:
+  _param:
+    qemu_vnc_ca_authority: qemu_vnc_ca

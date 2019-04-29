@@ -1,0 +1,85 @@
+classes:
+- system.keepalived.cluster.instance.openstack_barbican_vip
+- system.dogtag.server.cluster
+- system.barbican.server.cluster
+- system.apache.server.single
+- system.apache.server.site.barbican
+- service.barbican.server.plugin.dogtag
+- system.salt.minion.cert.barbican
+- system.haproxy.proxy.single
+- cluster.deployment_name.infra
+- cluster.deployment_name.openstack.networking.virtual
+parameters:
+  _param:
+    cluster_vip_address: ${_param:openstack_barbican_address}
+    keepalived_vip_interface: ens3
+    keepalived_vip_address: ${_param:cluster_vip_address}
+    keepalived_vip_password: ${_param:barbican_keepalived_vip_password_generated}
+    cluster_local_address: ${_param:single_address}
+    cluster_node01_hostname: ${_param:openstack_barbican_node01_hostname}
+    cluster_node01_address: ${_param:openstack_barbican_node01_address}
+    cluster_node02_hostname: ${_param:openstack_barbican_node02_hostname}
+    cluster_node02_address: ${_param:openstack_barbican_node02_address}
+    cluster_node03_hostname: ${_param:openstack_barbican_node03_hostname}
+    cluster_node03_address: ${_param:openstack_barbican_node03_address}
+    apache_barbican_api_address: ${_param:cluster_local_address}
+    apache_barbican_ssl: ${salt:minion:cert:barbican_server}
+    barbican_dogtag_host: ${_param:cluster_vip_address}
+    # dogtag listens on 8443 but there is no way to bind it to
+    # Specific IP, as on this setup dogtag installed on ctl nodes
+    # Change port on haproxy side to avoid binding conflict.
+    haproxy_dogtag_bind_port: 8444
+    cluster_dogtag_port: 8443
+    dogtag_master_host: kmn01.${linux:system:domain}
+    barbican_dogtag_nss_password: ${_param:dogtag_password_generated}
+    dogtag_pki_client_pkcs12_password: ${_param:dogtag_password_generated}
+    dogtag_pki_token_password: ${_param:dogtag_password_generated}
+    dogtag_pki_admin_password: ${_param:dogtag_password_generated}
+    dogtag_pki_ds_password: ${_param:dogtag_password_generated}
+    dogtag_pki_client_database_password: ${_param:dogtag_password_generated}
+    dogtag_pki_security_domain_password: ${_param:dogtag_password_generated}
+    dogtag_pki_clone_pkcs12_password: ${_param:dogtag_password_generated}
+  dogtag:
+   server:
+     ldap_hostname: ${linux:network:fqdn}
+     ldap_dn_password: ${_param:dogtag_password_generated}
+     ldap_admin_password: ${_param:dogtag_password_generated}
+     export_pem_file_path: /etc/dogtag/kra_admin_cert.pem
+     default_config_options:
+       pki_ds_hostname: ${linux:network:fqdn}
+       pki_backup_password: ${_param:dogtag_password_generated}
+       pki_clone_pkcs12_password: ${_param:dogtag_password_generated}
+  barbican:
+    server:
+      enabled: true
+      identity:
+        host: ${_param:openstack_control_address}
+      ssl:
+        key_file:  /srv/salt/pki/${_param:cluster_name}/barbican_serve.key
+        cert_file: /srv/salt/pki/${_param:cluster_name}/barbican_server.crt
+        chain_file: /srv/salt/pki/${_param:cluster_name}/barbican_server-with-chain.crt
+        all_file: /srv/salt/pki/${_param:cluster_name}/barbican_server.pem
+        ca_file: /srv/salt/pki/${_param:cluster_name}/barbican-ca-cert.pem
+      dogtag_admin_cert:
+        engine: mine
+        minion: ${_param:dogtag_master_host}
+      ks_notifications_enable: True
+      store:
+        software:
+          global_default: True
+          store_plugin: dogtag_crypto
+      plugin:
+        dogtag:
+          dogtag_port: ${_param:haproxy_dogtag_bind_port}
+  haproxy:
+    proxy:
+      listen:
+        barbican-api:
+          type: ~
+        barbican-admin-api:
+          type: ~
+  linux:
+    system:
+      package:
+        python-os-client-config:
+          version: latest

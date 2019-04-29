@@ -1,0 +1,15 @@
+classes:
+- system.linux.system.repo.keystorage.influxdb
+parameters:
+  linux:
+    system:
+      repo:
+        mcp_influxdb:
+          source: "deb [arch=amd64] ${_param:linux_system_repo_mcp_influxdb_url}/${_param:linux_system_codename}/ ${_param:linux_system_codename} stable"
+          key: ${_param:linux_system_repo_mcp_influxdb_key}
+          architectures: amd64
+          clean_file: true
+          pin:
+          - pin: 'release l=InfluxDB'
+            priority: 1100
+            package: '*'

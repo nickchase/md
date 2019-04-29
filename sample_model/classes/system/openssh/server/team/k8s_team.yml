@@ -1,0 +1,21 @@
+classes:
+- system.openssh.server.team.members.ashestakov
+- system.openssh.server.team.members.vjigulin
+- system.openssh.server.team.members.skolekonov
+- system.openssh.server.team.members.pskamruk
+- system.openssh.server.team.members.ishvedunov
+- system.openssh.server.team.members.jnowak
+- system.openssh.server.team.members.loles
+- system.openssh.server.team.members.vryzhenkin
+# Deprecated users
+- system.openssh.server.team.members.deprecated.dshulyak
+- system.openssh.server.team.members.deprecated.mattymo
+- system.openssh.server.team.members.deprecated.mkwiek
+- system.openssh.server.team.members.deprecated.psiwczak
+- system.openssh.server.team.members.deprecated.sgolovatiuk
+- system.openssh.server.team.members.deprecated.slagun
+- system.openssh.server.team.members.deprecated.vefimova
+
+parameters:
+  _param:
+    linux_system_user_sudo: true

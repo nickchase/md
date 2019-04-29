@@ -1,0 +1,25 @@
+classes:
+- system.backupninja.server.single
+- system.xtrabackup.server.single
+- system.cassandra.backup.server.single
+- system.zookeeper.backup.server.single
+- system.glusterfs.client.cluster
+- system.glusterfs.client.volume.backup
+parameters:
+  _param:
+    backupninja_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGifLsVyLG9+Wi1Nm8AlyVtCeYOBbLcArkQBy87UVh/QiPPSiQAyj46B7AkAlUpozju+ykYHK+0O3yIEH0moPQott1Eb6owv2c5lrfac6g6ZTv+wn4mo1iS1ttbs5Xe3iE704tA0D4CnixRHgr98Xhngj6vguiKJSZumgJlIxMxHPXVVdRjYRHEc9RVKZSniznS/WR1ikyqQTYUFpBjOwntNE2NbMV3JVablXZhdkhEYhfk/o22EEmBsrlaMelqgQGOu3bWU50a7rSANDsDgwhwkuwj9FYw35LN94xbW4IJWApwBRI6x1hsBI9wGPyi5/03uxV/2YpR6TdNU6Qpg7f
+    xtrabackup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGifLsVyLG9+Wi1Nm8AlyVtCeYOBbLcArkQBy87UVh/QiPPSiQAyj46B7AkAlUpozju+ykYHK+0O3yIEH0moPQott1Eb6owv2c5lrfac6g6ZTv+wn4mo1iS1ttbs5Xe3iE704tA0D4CnixRHgr98Xhngj6vguiKJSZumgJlIxMxHPXVVdRjYRHEc9RVKZSniznS/WR1ikyqQTYUFpBjOwntNE2NbMV3JVablXZhdkhEYhfk/o22EEmBsrlaMelqgQGOu3bWU50a7rSANDsDgwhwkuwj9FYw35LN94xbW4IJWApwBRI6x1hsBI9wGPyi5/03uxV/2YpR6TdNU6Qpg7f
+    zookeeper_backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGifLsVyLG9+Wi1Nm8AlyVtCeYOBbLcArkQBy87UVh/QiPPSiQAyj46B7AkAlUpozju+ykYHK+0O3yIEH0moPQott1Eb6owv2c5lrfac6g6ZTv+wn4mo1iS1ttbs5Xe3iE704tA0D4CnixRHgr98Xhngj6vguiKJSZumgJlIxMxHPXVVdRjYRHEc9RVKZSniznS/WR1ikyqQTYUFpBjOwntNE2NbMV3JVablXZhdkhEYhfk/o22EEmBsrlaMelqgQGOu3bWU50a7rSANDsDgwhwkuwj9FYw35LN94xbW4IJWApwBRI6x1hsBI9wGPyi5/03uxV/2YpR6TdNU6Qpg7f
+    cassandra_backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGifLsVyLG9+Wi1Nm8AlyVtCeYOBbLcArkQBy87UVh/QiPPSiQAyj46B7AkAlUpozju+ykYHK+0O3yIEH0moPQott1Eb6owv2c5lrfac6g6ZTv+wn4mo1iS1ttbs5Xe3iE704tA0D4CnixRHgr98Xhngj6vguiKJSZumgJlIxMxHPXVVdRjYRHEc9RVKZSniznS/WR1ikyqQTYUFpBjOwntNE2NbMV3JVablXZhdkhEYhfk/o22EEmBsrlaMelqgQGOu3bWU50a7rSANDsDgwhwkuwj9FYw35LN94xbW4IJWApwBRI6x1hsBI9wGPyi5/03uxV/2YpR6TdNU6Qpg7f
+  backupninja:
+    server:
+      home_dir: /srv/volumes/backup/backupninja
+  xtrabackup:
+    server:
+      backup_dir: /srv/volumes/backup/xtrabackup
+  zookeeper:
+    backup:
+      backup_dir: /srv/volumes/backup/zookeeper
+  cassandra:
+    backup:
+      backup_dir: /srv/volumes/backup/cassandra

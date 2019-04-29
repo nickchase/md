@@ -1,0 +1,8 @@
+classes:
+- system.octavia.manager.single
+
+
+parameters:
+  _param:
+    cluster_local_address: ${_param:single_address}
+    octavia_private_key: ${_param:octavia_private_key_generated}
